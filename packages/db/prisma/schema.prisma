@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum modelTypeEnum {
+  Man
+  Women
+}
+// 'white','black','asian','southAsian','eastAsian','hispanic'
+
+enum modelEthenicity {
+  white
+  black
+  asian
+  southAsian
+  eastAsian
+  hispanic
+}
+
+enum EyeColor {
+  blue
+  black
+  white
+  brown
+}
+
+enum GenerationStatus {
+  pending
+  success
+  failed
+}
+
+model Model {
+  id         String          @id @default(uuid())
+  name       String
+  type       modelTypeEnum
+  age        Int
+  ethenicity modelEthenicity @default(southAsian)
+  eyeColor   EyeColor        @default(black)
+  isBald     Boolean         @default(false)
+  images     Photo[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profilePic String?
+
+  photos      Photo[]
+  generations Generation[]
+  credits     Credit?
+}
+
+model Photo {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  orignalUrl  String
+  fileName    String
+  mimeType    String
+  size        Int
+  modelId     String
+  model       Model        @relation(fields: [modelId], references: [id])
+  uploadedAt  DateTime     @default(now())
+  generations Generation[]
+}
+
+model Generation {
+  id           String           @id @default(uuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id])
+  photoId      String
+  sourcePhoto  Photo            @relation(fields: [photoId], references: [id])
+  packId       String
+  pack         Pack             @relation(fields: [packId], references: [id])
+  outputUrl    String
+  status       GenerationStatus @default(pending)
+  errorMessage String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model Pack {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  description    String?
+  previewUrl     String?
+  isPremium      Boolean  @default(false)
+  priceInCredits Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  generations Generation[]
+}
+
+model Credit {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
