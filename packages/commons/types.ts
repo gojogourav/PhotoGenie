@@ -4,10 +4,11 @@ export const TrainingModels = z.object({
     name:z.string(),
     type:z.enum(["Man","Women"]),
     age:z.number(),
-    ethenic:z.enum(['white','black','asian','south east asian','east asian','hispanic']),
+    ethenicity:z.enum([ 'white','black','asian','southAsian','eastAsian','hispanic']),
     eyeColor:z.enum(['blue','black','white']),
-    bald:z.boolean(),
-    images:z.array(z.string())
+    isBald:z.boolean(),
+    images:z.array(z.string()),
+    packId: z.string()
 })
 
 export const GenerateImage = z.object({

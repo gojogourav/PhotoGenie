@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -14,19 +8,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum modelTypeEnum {
-  Man
-  Women
+model Credit {
+  id        String   @id
+  userId    String   @unique
+  amount    Int      @default(0)
+  updatedAt DateTime
+  User      User     @relation(fields: [userId], references: [id])
 }
-// 'white','black','asian','southAsian','eastAsian','hispanic'
 
-enum modelEthenicity {
-  white
-  black
-  asian
-  southAsian
-  eastAsian
-  hispanic
+model Generation {
+  id           String           @id @default(uuid())
+  userId       String
+  photoId      String
+  packId       String
+  outputUrl    String
+  errorMessage String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime
+  status       GenerationStatus @default(pending)
+  Pack         Pack             @relation(fields: [packId], references: [id])
+  Photo        Photo            @relation(fields: [photoId], references: [id])
+  User         User             @relation(fields: [userId], references: [id])
+}
+
+model Model {
+  id         String          @id @default(uuid())
+  type       modelTypeEnum
+  age        Int
+  ethenicity modelEthenicity @default(southAsian)
+  eyeColor   EyeColor        @default(black)
+  isBald     Boolean         @default(false)
+  name       String
+  Photo      Photo[]
+  packId     String
+  pack       Pack            @relation(fields: [packId], references: [id])
+}
+
+model Pack {
+  id             String       @id @default(uuid())
+  name           String       @unique
+  description    String?
+  previewUrl     String?
+  prompt         String
+  isPremium      Boolean      @default(false)
+  priceInCredits Int          @default(0)
+  createdAt      DateTime     @default(now())
+  Generation     Generation[]
+  model          Model[]
+}
+
+model Photo {
+  id         String       @id @default(uuid())
+  userId     String
+  orignalUrl String
+  fileName   String
+  mimeType   String
+  size       Int
+  uploadedAt DateTime     @default(now())
+  modelId    String
+  Generation Generation[]
+  Model      Model        @relation(fields: [modelId], references: [id])
+  User       User         @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id         String       @id @default(uuid())
+  clerkId    String       @unique
+  email      String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime
+  profilePic String?
+  Credit     Credit?
+  Generation Generation[]
+  Photo      Photo[]
 }
 
 enum EyeColor {
@@ -42,76 +96,16 @@ enum GenerationStatus {
   failed
 }
 
-model Model {
-  id         String          @id @default(uuid())
-  name       String
-  type       modelTypeEnum
-  age        Int
-  ethenicity modelEthenicity @default(southAsian)
-  eyeColor   EyeColor        @default(black)
-  isBald     Boolean         @default(false)
-  images     Photo[]
+enum modelEthenicity {
+  white
+  black
+  asian
+  southAsian
+  eastAsian
+  hispanic
 }
 
-model User {
-  id        String   @id @default(uuid())
-  clerkId   String   @unique
-  email     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  profilePic String?
-
-  photos      Photo[]
-  generations Generation[]
-  credits     Credit?
-}
-
-model Photo {
-  id          String       @id @default(uuid())
-  userId      String
-  user        User         @relation(fields: [userId], references: [id])
-  orignalUrl  String
-  fileName    String
-  mimeType    String
-  size        Int
-  modelId     String
-  model       Model        @relation(fields: [modelId], references: [id])
-  uploadedAt  DateTime     @default(now())
-  generations Generation[]
-}
-
-model Generation {
-  id           String           @id @default(uuid())
-  userId       String
-  user         User             @relation(fields: [userId], references: [id])
-  photoId      String
-  sourcePhoto  Photo            @relation(fields: [photoId], references: [id])
-  packId       String
-  pack         Pack             @relation(fields: [packId], references: [id])
-  outputUrl    String
-  status       GenerationStatus @default(pending)
-  errorMessage String?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-}
-
-model Pack {
-  id             String   @id @default(cuid())
-  name           String   @unique
-  description    String?
-  previewUrl     String?
-  isPremium      Boolean  @default(false)
-  priceInCredits Int      @default(0)
-  createdAt      DateTime @default(now())
-
-  generations Generation[]
-}
-
-model Credit {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-  amount    Int      @default(0)
-  updatedAt DateTime @updatedAt
+enum modelTypeEnum {
+  Man
+  Women
 }

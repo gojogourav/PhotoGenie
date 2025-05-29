@@ -1,15 +1,18 @@
 // apps/api/index.ts
 import express from "express";
 import { TrainingModels, GenerateImage, OutputImages } from "commons/types"
-import { prismaClient } from "db";
+import {prisma}  from "db/index";
 import router from "./routes/uploadRoute";
+import * as z from 'zod'
 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(express.json())
 
-app.post("ai/train", async (req, res) => {
+app.post("/ai/train", async (req, res) => {
+  
+  type TrainingModelsType = z.infer<typeof TrainingModels> 
   const parsedBody = TrainingModels.safeParse(req.body)
 
   if (!parsedBody.success) {
@@ -18,20 +21,23 @@ app.post("ai/train", async (req, res) => {
     })
     return
   }
+  const data: TrainingModelsType = parsedBody.data;
 
-  const data = await prismaClient.model.create({
+
+  const model = await prisma.model.create({
     data: {
-      type: parsedBody.data.type,
-      age: parsedBody.data.age,
-      ethenicity: parsedBody.data.ethenicity,
-      isBald: parsedBody.data.isBald,
-      eyeColor: parsedBody.data.eyeColor,
-      name: parsedBody.data.name
+      type: data.type,
+      age:data.age,
+      ethenicity: data.ethenicity,
+      isBald: data.isBald,
+      eyeColor: data.eyeColor,
+      name: data.name,
+      packId:data.packId,
     }
   })
 
   res.json({
-    modelId:data.id
+    modelId:model.id
   })
   return;
 })
