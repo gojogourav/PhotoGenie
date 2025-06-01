@@ -4,15 +4,18 @@ import { TrainingModels, GenerateImage, OutputImages } from "commons/types"
 import {prisma}  from "db/index";
 import router from "./routes/uploadRoute";
 import * as z from 'zod'
+import dotenv from 'dotenv'
+import authRoute from "./routes/authRoute";
 
+dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 8080;
 app.use(express.json())
 
 app.post("/ai/train", async (req, res) => {
   
-  type TrainingModelsType = z.infer<typeof TrainingModels> 
   const parsedBody = TrainingModels.safeParse(req.body)
 
   if (!parsedBody.success) {
@@ -21,18 +24,17 @@ app.post("/ai/train", async (req, res) => {
     })
     return
   }
-  const data: TrainingModelsType = parsedBody.data;
 
 
   const model = await prisma.model.create({
     data: {
-      type: data.type,
-      age:data.age,
-      ethenicity: data.ethenicity,
-      isBald: data.isBald,
-      eyeColor: data.eyeColor,
-      name: data.name,
-      packId:data.packId,
+      type: parsedBody.data.type,
+      age:parsedBody.data.age,
+      ethenicity: parsedBody.data.ethenicity,
+      isBald: parsedBody.data.isBald,
+      eyeColor: parsedBody.data.eyeColor,
+      name: parsedBody.data.name,
+      packId:parsedBody.data.packId,
     }
   })
 
@@ -45,7 +47,7 @@ app.post("/ai/train", async (req, res) => {
 
 app.use('/api', router);
 
-
+app.use('/api/user',authRoute);
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
