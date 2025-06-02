@@ -1,10 +1,8 @@
-import { Redis } from "@upstash/redis"
-console.log("This is url",process.env.UPSTASH_REDIS_REST_URL);
-console.log("This is token",process.env.UPSTASH_REDIS_REST_TOKEN);
-console.log("This is token",process.env.CLOUDINARY_CLOUD_NAME);
-
-export const redisClient = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-
-});
+import Redis from "ioredis";
+export const redisClient = new Redis(process.env.UPSTASH_API_KEY || 'redis://localhost:6379');
+redisClient
+  .on('connect', () => console.log('Redis connected'))
+  .on('ready', () => console.log('Redis ready'))
+  .on('error', err => console.error('BullMQ Redis Error:', err))
+  .on('reconnecting', () => console.log('Redis reconnecting...'))
+  .on('end', () => console.log('Redis connection closed'));

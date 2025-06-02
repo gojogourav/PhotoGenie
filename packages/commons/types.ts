@@ -21,3 +21,8 @@ export const OutputImages = z.object({
     modelId:z.string(),
     packId:z.string()
 })
+
+export const login = z.object({
+    username:z.string().min(4).max(10).toLowerCase(),
+    password:z.string().min(4).max(20)
+})

@@ -7,8 +7,12 @@ import * as bcrypt from 'bcryptjs'
 const registerControllerValidation = z.object({
     email: z.string().email().nonempty(),
     username: z.string().toLowerCase().max(10).min(4).nonempty(),
-    password: z.string().max(20).min(10).nonempty(),
+    password: z.string().max(20).min(4).nonempty(),
     name: z.string().nonempty(),
+})
+const loginControllerValidation = z.object({
+    username: z.string().toLowerCase().max(10).min(4).nonempty(),
+    password: z.string().max(20).min(4).nonempty(),
 })
 
 const generateToken = (res: Response, userId: string): void => {
@@ -65,6 +69,42 @@ export const registerController = async (req: Request, res: Response, next: Next
 
 
         res.status(200).json({ message: "user created successfully ", user: newUser })
+        return;
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to create user ", error })
+        return;
+    }
+}
+
+
+export const loginController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const parsedBody = loginControllerValidation.safeParse(req.body);
+
+        if (!parsedBody.success) {
+            res.status(401).json({ message: "Please enter valid details" })
+            return
+        }
+        const existingUser = await prisma.user.findFirst({
+            where: { username: parsedBody.data.username}
+        })
+
+        if (!existingUser || !existingUser.password) {
+            res.status(401).json({ message: "Error user already exists" })
+            return;
+        }
+        const isCorrect = await bcrypt.compare(parsedBody.data.password ,existingUser.password);
+        if(!isCorrect){
+            res.status(401).json({ message: "Invalid credentials.", ok: false });
+            return;
+        }
+
+        generateToken(res, existingUser.id);
+
+
+        res.status(200).json({ message: "user created successfully ", user: existingUser })
         return;
 
     } catch (error) {

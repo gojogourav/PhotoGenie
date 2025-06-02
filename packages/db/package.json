@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "exports":{
-    "./index":"./index.ts"
+    "./index":"./index.ts",
+    "./generated":"./generated"
   },
   "scripts": {
     "dev":"ts-node-dev index.ts",
