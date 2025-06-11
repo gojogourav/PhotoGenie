@@ -1,7 +1,10 @@
 import { Router } from "express";
-import upload from "../middleware/multer";
+import { authMiddleware } from "../middleware/auth";
 import uploadController from "../controllers/uplodController";
+import upload from "../middleware/multer";
 const router = Router();
-router.post('/upload',upload.single('image'),uploadController);
+router.post('/',authMiddleware,upload.array("files",20),uploadController);
+router.get('/photos',authMiddleware,uploadController)
+router.delete('/photos/:id',authMiddleware,uploadController)
 
 export default router;

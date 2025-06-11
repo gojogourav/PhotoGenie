@@ -8,6 +8,7 @@ import dotenv from 'dotenv'
 import authRoute from "./routes/authRoute";
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { authMiddleware } from "./middleware/auth";
 
 dotenv.config();
 const app = express();
@@ -22,38 +23,7 @@ app.use(cors({
 }))
 app.use(cookieParser());
 
-app.post("/ai/train", async (req, res) => {
-  
-  const parsedBody = TrainingModels.safeParse(req.body)
 
-  if (!parsedBody.success) {
-    res.status(411).json({
-      message: "Please enter valid input"
-    })
-    return
-  }
-
-
-  const model = await prisma.model.create({
-    data: {
-      type: parsedBody.data.type,
-      age:parsedBody.data.age,
-      ethenicity: parsedBody.data.ethenicity,
-      isBald: parsedBody.data.isBald,
-      eyeColor: parsedBody.data.eyeColor,
-      name: parsedBody.data.name,
-      packId:parsedBody.data.packId,
-    }
-  })
-
-  res.json({
-    modelId:model.id
-  })
-  return;
-})
-
-
-app.use('/api', router);
 
 app.use('/api/user',authRoute);
 app.get('/', (req, res) => {

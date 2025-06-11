@@ -71,6 +71,9 @@ importers:
       redis:
         specifier: ^5.1.1
         version: 5.1.1
+      stream:
+        specifier: ^0.0.3
+        version: 0.0.3
       zod:
         specifier: ^3.25.30
         version: 3.25.30
@@ -126,6 +129,9 @@ importers:
       next:
         specifier: 15.3.3
         version: 15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      postcss:
+        specifier: ^8.5.4
+        version: 8.5.4
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -137,7 +143,7 @@ importers:
         version: 3.25.30
     devDependencies:
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: ^4.1.7
         version: 4.1.7
       '@types/node':
         specifier: ^20
@@ -149,7 +155,7 @@ importers:
         specifier: ^19
         version: 19.1.1(@types/react@19.1.0)
       tailwindcss:
-        specifier: ^4
+        specifier: ^4.1.7
         version: 4.1.7
       typescript:
         specifier: ^5
@@ -1340,6 +1346,10 @@ packages:
   commander@10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
+
+  component-emitter@2.0.0:
+    resolution: {integrity: sha512-4m5s3Me2xxlVKG9PkZpQqHQR7bgpnN7joDMJ4yvVkVXngjoITG76IaZmzmywSeRTeTpc6N6r3H3+KyUurV8OYw==}
+    engines: {node: '>=18'}
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -2594,8 +2604,8 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.5.3:
-    resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
+  postcss@8.5.4:
+    resolution: {integrity: sha512-QSa9EBe+uwlGTFmHsPKokv3B/oEMQZxfqW0QqNCyhpa6mB1afzulwn8hihglqAb2pOw+BJgNlmXQ8la2VeHB7w==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -2919,6 +2929,9 @@ packages:
 
   std-env@3.9.0:
     resolution: {integrity: sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==}
+
+  stream@0.0.3:
+    resolution: {integrity: sha512-aMsbn7VKrl4A2T7QAQQbzgN7NVc70vgF5INQrBXqn4dCXN1zy3L9HGgLO5s7PExmdrzTJ8uR/27aviW8or8/+A==}
 
   streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
@@ -3780,7 +3793,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.1.7
       '@tailwindcss/oxide': 4.1.7
-      postcss: 8.5.3
+      postcss: 8.5.4
       tailwindcss: 4.1.7
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
@@ -4335,6 +4348,8 @@ snapshots:
     optional: true
 
   commander@10.0.1: {}
+
+  component-emitter@2.0.0: {}
 
   concat-map@0.0.1: {}
 
@@ -5789,7 +5804,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postcss@8.5.3:
+  postcss@8.5.4:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -6200,6 +6215,10 @@ snapshots:
   statuses@2.0.1: {}
 
   std-env@3.9.0: {}
+
+  stream@0.0.3:
+    dependencies:
+      component-emitter: 2.0.0
 
   streamsearch@1.1.0: {}
 

@@ -59,9 +59,9 @@ export default function Login() {
 
             console.log("This is data", JSON.stringify(data));
             router.push('/')
-        }catch(error){
-            
-            console.error("Error during registration ",error);
+        } catch (error) {
+
+            console.error("Error during registration ", error);
             alert("Unexpected Error Occured")
         }
         console.log(`email : ${formData.username}`);
@@ -70,68 +70,77 @@ export default function Login() {
 
 
     return (
-        <div className="min-h-screen bg-[url('/bg.jpeg')] bg-no-repeat bg-cover bg-center flex items-center justify-center text-black shadow-2xl px-4 bg-gray-100">
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: 'linear' }}
-                className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md"
-            >
-                <h2 className="text-2xl font-semibold mb-6 text-center text-black">Login</h2>
-                <form className="space-y-5" onSubmit={handleSubmit}>
-                    <div>
+            <div className="min-h-screen  flex items-center justify-center text-black shadow-2xl px-4 bg-black">
 
-                        <label className="block text-sm font-medium text-gray-700">Username</label>
-                        {errors.username && <p className="text-red-600 text-sm mt-1">{errors.username}</p>}
+                <div className='relative justify-center'>
+                  <div className="absolute w-72 h-72 bg-pink-400 rounded-full  filter blur-xl opacity-50 animate-blob animation-delay-4000  bottom-10 "></div>
+  <div className="absolute w-72 h-72 bg-yellow-400 rounded-full  filter blur-xl opacity-50 animate-blob  top-0  animation-delay-5000"></div>
+  <div className="absolute w-72 h-72 bg-purple-400 rounded-full  filter blur-xl opacity-50 animate-blob animation-delay-2000  bottom-0"></div>
 
-                        <input
-                            onChange={handleChange}
-                            value={formData.username}
+                </div>
 
-                            type="username"
-                            className="mt-1 w-full px-4 py-2  border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="username"
-                            name='username'
-                        />
-                    </div>
-                    <div>
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: 'linear' }}
+                    className="p-8 rounded-2xl  w-full max-w-md z-0 bg-white/10  inset-ring-white inset-shadow-white inset-shadow-md "
+                >
+                    <h2 className="text-2xl mb-6 text-center text-white font-extrabold font-sans ">Login</h2>
+                    <form className="space-y-5" onSubmit={handleSubmit}>
+                        <div>
 
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
-                        {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
+                            <label className="block text-sm font-medium text-white">Username</label>
+                            {errors.username && <p className="text-red-600 text-sm mt-1">{errors.username}</p>}
 
-                        <input
-                            onChange={handleChange}
-                            value={formData.password}
-                            type="password"
-                            name='password'
-                            className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="••••••••"
-                        />
+                            <input
+                                onChange={handleChange}
+                                value={formData.username}
 
-                    </div>
+                                type="username"
+                                className="mt-1 w-full px-4 py-2 text-white  rounded-lg shadow-lg focus:outline-none border-none inset-ring-white inset-shadow-white inset-shadow-md focus:ring-2 focus:ring-indigo-500"
+                                placeholder="username"
+                                name='username'
+                            />
+                        </div>
+                        <div>
 
-                    <motion.button
-                        type="submit"
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="w-full bg-blue-700 cursor-pointer text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition"
-                    >
-                        Sign In
-                    </motion.button>
-                    <label className='flex justify-center text-gray-700 space-x-1'>
-                        <label htmlFor="">
+                            <label className="block text-sm font-medium text-white">Password</label>
+                            {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
+
+                            <input
+                                onChange={handleChange}
+                                value={formData.password}
+                                type="password"
+                                name='password'
+                                className="mt-1 w-full px-4 py-2 rounded-lg text-white shadow-lg focus:outline-none focus:ring-2 border-none inset-ring-white inset-shadow-white inset-shadow-md focus:ring-indigo-500"
+                                placeholder="••••••••"
+                            />
+
+                        </div>
+
+                        <motion.button
+                            type="submit"
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            className="w-full inset-ring-white bg-blue-700  inset-shadow inset-shadow-white inset-shadow-md  cursor-pointer text-white py-2 rounded-lg font-medium hover:bg-800 transition"
+                        >
+                            Sign In
+                        </motion.button>
+                        <label className='flex justify-center  text-white space-x-1'>
+                            <label htmlFor="">
 
 
-                            New user?
+                                New user?
+                            </label>
+                            <label className='text-blue-500  text-sm hover:underline font-bold cursor-pointer' onClick={() => router.push('/register')}>
+
+                                Register Here
+                            </label>
                         </label>
-                        <label className='text-blue-700  text-sm hover:underline font-bold cursor-pointer' onClick={() => router.push('/register')}>
+                    </form>
+                </motion.div>
 
-                            Register Here
-                        </label>
-                    </label>
-                </form>
-            </motion.div>
+            </div>
 
-        </div>
     );
 }

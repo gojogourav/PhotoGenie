@@ -1,45 +1,62 @@
-import { Request, Response } from "express"
-import cloudinary, { cloudinaryOptions } from "../utils/cloudinary";
-const uploadController = async (req: Request, res: Response): Promise<void> => {
-    try {
-        if (!req.file) {
-            res.status(400).json({ message: "No file upload ." })
-            return;
-        }
-        if (!req.file.mimetype.startsWith("image/")) {
-            res.status(400).json({ message: "Only image files are allowed." });
-            return;
-        }
-
-        const uploadPromise = new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream({
-                folder: 'user',
-                ...cloudinaryOptions
-            },
-                (error, result) => {
-                    if (error) {
-                        console.error("cloudinary upload error", error)
-                        reject(error)
-                    } else {
-                        resolve(result)
-                    }
-                }
-            )
-
-            uploadStream.end(req.file?.buffer);
-        });
-        const result: any = await uploadPromise;
-
-        res.status(200).json({
-            message: "File uploaded successfully to Cloudinary!",
-            url: result.secure_url,
-            public_id: result.public_id,
-            asset_id: result.asset_id
-        })
-    } catch (error) {
-        console.error("Server upload error", error)
-        res.status(500).json({ message: 'Failed to upload image' })
-    }
+import { Response } from "express"
+import { AuthenticationRequest } from "../middleware/auth";
+import cloudinary from "../utils/cloudinary";
+import { Readable } from 'stream'
+interface CloudinaryResult {
+    public_id: string,
+    bytes: number,
 }
+
+const MINIMUM_IMAGES = 20;
+
+const uploadController = async (req: AuthenticationRequest, res: Response): Promise<void> => {
+    const userId = req.user?.id
+    const uploadTag = `${userId}/${crypto.randomUUID()}`
+    if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    try {
+        const files = req.files as Express.Multer.File[];
+
+        if (!files || files.length < MINIMUM_IMAGES) {
+            res.status(400).json({ message: "No files uploaded" });
+            return;
+        }
+
+        const uploadResult: CloudinaryResult[] = await Promise.all(
+            files.map(
+                (file) => new Promise<CloudinaryResult>((resolve, reject) => {
+                    const upload_stream = cloudinary.uploader.upload_stream(
+                        {
+                            folder: `users/uploads/${userId}/${uploadTag}`,
+                            use_filename: true,
+                        },
+                        (error, result) => {
+                            if (error || !result) return reject(error || new Error("Upload has failed"));
+                            resolve({
+                                public_id: result.public_id,
+                                bytes: result.bytes,
+                            })
+                        }
+                    )
+                    Readable.from(file.buffer).pipe(upload_stream);
+                })
+            )
+        );
+
+        res.status(200).json({ uploaded: uploadResult })
+        return;
+    } catch (error) {
+        console.error("Upload Error", error);
+        res.status(500).json({
+            message: "Server error during upload",
+            trainingTag: uploadTag
+
+        })
+        return;
+    }
+};
+
 
 export default uploadController;

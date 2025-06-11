@@ -109,7 +109,7 @@ export const loginController = async (req: Request, res: Response, next: NextFun
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Failed to create user ", error })
+        res.status(500).json({ message: "Failed to login user ", error })
         return;
     }
 }
